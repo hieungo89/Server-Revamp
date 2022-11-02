@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
@@ -10,6 +11,6 @@ app.use(morgan('dev'));
 
 app.use('/', router);
 
-const port = 3000;
+const port = 27017;
 
 app.listen(port, console.log(`Listening on port: ${port}`));
