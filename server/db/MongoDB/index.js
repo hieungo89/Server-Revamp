@@ -31,7 +31,7 @@ const reviewsSchema = mongoose.Schema(
 
 const Reviews = mongoose.model('Reviews', reviewsSchema)
 
-const reviewsMetaSchema = mongoose.Schema(
+const metaSchema = mongoose.Schema(
   {
     product_id: Number,
     ratings: { '1': Number, '2': Number, '3': Number, '4': Number, '5': Number },
@@ -47,9 +47,9 @@ const reviewsMetaSchema = mongoose.Schema(
   }
 )
 
-const ReviewsMeta = mongoose.model('ReviewsMeta', reviewsMetaSchema)
+const Meta = mongoose.model('Meta', metaSchema)
 
 module.exports = {
   Reviews,
-  ReviewsMeta
+  Meta
 }
