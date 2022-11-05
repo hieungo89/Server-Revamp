@@ -11,6 +11,8 @@ const pool = new Pool({
 
 // pool.query(`DROP TABLE IF EXISTS reviews, reviews_photos, characteristics, characteristics_reviews;`);
 
+// CHANGING ALL DATE TO epoch time!
+// ALTER TABLE reviews ALTER COLUMN date TYPE TIMESTAMP USING to_timestamp(date/1000);
 
 pool.query(`CREATE TABLE IF NOT EXISTS reviews(
   reviews_id SERIAL PRIMARY KEY,
@@ -20,11 +22,11 @@ pool.query(`CREATE TABLE IF NOT EXISTS reviews(
   summary TEXT,
   body TEXT NOT NULL,
   recommend BOOLEAN NOT NULL,
-  reported BOOLEAN NOT NULL,
+  reported BOOLEAN NOT NULL DEFAULT f,
   reviewer_name VARCHAR(60) NOT NULL,
   reviewer_email VARCHAR(60) NOT NULL,
   response VARCHAR(1000),
-  helpfulness SMALLINT NOT NULL);`
+  helpfulness SMALLINT NOT NULL DEFAULT 0);`
 );
 
 pool.query(`CREATE TABLE IF NOT EXISTS characteristics(
