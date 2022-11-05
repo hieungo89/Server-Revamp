@@ -94,16 +94,5 @@ pool.query(`CREATE TABLE IF NOT EXISTS characteristics_reviews(
 
 // pool.query(`SELECT setval(pg_get_serial_sequence('characteristics_reviews', 'characteristics_reviews_id'), (select max(characteristics_reviews_id) from characteristics_reviews));`).then(() => console.log('Sequence updated for characteristics_reviews'));
 
-// const updateDate = () => {
-//   pool.query(`SELECT id FROM reviews`)
-//   const totalID = 5774953;
-
-//   for (let i = 1; i <= 5774953, i++) {
-//     // pool.query(`UPDATE reviews SET date = to_timestamp(date/1000) WHERE id=${i};`)
-//   }
-
-// }
-// updateDate();
-
 
 module.exports = pool;

@@ -1,22 +1,58 @@
 const db = require('../db/Postgres');
 
 module.exports = {
-  getAllReviews: ({ id }) => {
-    // const query = `SELECT id, product_id, rating, date(to_timestamp(date/1000)), summary, body, recommend, reported, reviewer_name, response, helpfulness
-    //   FROM reviews
-    //   WHERE product_id=${id}
-    //   ORDER BY helpfulness DESC, date DESC
-    //   LIMIT 10;`;
-    const query = `SELECT reviews_id, product_id, rating, to_timestamp(date/1000) AS date, summary, body, recommend, reported, reviewer_name, response, helpfulness, url AS photos
-      FROM reviews
-      LEFT JOIN reviews_photos ON reviews_id = review_id
-      WHERE product_id=${id}
-      ORDER BY date DESC
-      LIMIT 10;`;
-    return db.query(query)
-      .then((result) => {return result})
+  getAllReviews: ({ product_id }) => {
+    const queryStr = `SELECT product_id,
+      (SELECT json_agg(json_build_object(
+        'review_id', reviews_id,
+        'rating', rating,
+        'date', to_timestamp(date/1000),
+        'summary', summary,
+        'body', body,
+        'recommend', recommend,
+        'reviewer_name', reviewer_name,
+        'response', response,
+        'helpfulness', helpfulness,
+        'photos', (SELECT json_agg(url) FROM reviews_photos WHERE reviews_id=review_id)
+        ))
+      FROM reviews WHERE product_id=${product_id}) AS results
+      FROM reviews WHERE product_id=${product_id}
+      LIMIT 1;`;
+    return db.query(queryStr)
+      .then(result => { return result });
+  },
+
+
+  getMetaInfo: ({ product_id }) => {
+    console.log('models: get Meta ', product_id)
+    const queryStr = `SELECT product_id,
+    (SELECT product_id
+    FROM reviews WHERE product_id=${product_id}) AS ratings
+
+
+    FROM characteristics WHERE product_id=${product_id};`
+    return db.query(queryStr)
+      .then(result => { return result });
+  },
+
+
+  addReview: ({ product_id, rating, summary, recommend, body, reviewer_name, reviewer_email, photos }) => {
+    console.log('models: add Review ', body)
+    const queryStr = `INSERT INTO reviews(product_id, rating, date, summary, recommend, reported, reviewer_name, reviewer_email, response, helpful)
+      VALUES($1, )`
+
+  },
+
+  markHelpful: ({ review_id }) => {
+    console.log('models: markHelpful ', review_id)
+    const queryStr = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE reviews_id=${review_id}`
+    return db.query(queryStr);
+  },
+
+  markReport: ({ review_id }) => {
+    console.log('models: markReport ', review_id)
+    const queryStr = `UPDATE reviews SET reported = true WHERE reviews_id=${review_id}`
+    return db.query(queryStr);
   }
-
-
 
 };
