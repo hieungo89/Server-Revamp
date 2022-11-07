@@ -11,7 +11,7 @@ const pool = new Pool({
 
 // pool.query(`DROP TABLE IF EXISTS reviews, reviews_photos, characteristics, characteristics_reviews;`);
 
-// CHANGING ALL DATE TO epoch time!
+// CHANGING ALL DATE TO regular time!
 // ALTER TABLE reviews ALTER COLUMN date TYPE TIMESTAMP USING to_timestamp(date/1000);
 
 pool.query(`CREATE TABLE IF NOT EXISTS reviews(

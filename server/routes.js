@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const controllers = require('./controllers/reviews');
 
-// own routes to controller here
 router.get('/reviews/:product_id', controllers.getReviews);
 router.get('/reviews/meta/:product_id', controllers.getMeta);
 router.post('/reviews/:product_id', controllers.postReview);
