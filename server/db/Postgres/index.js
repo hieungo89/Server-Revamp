@@ -14,6 +14,8 @@ const pool = new Pool({
 // CHANGING ALL DATE TO regular time!
 // ALTER TABLE reviews ALTER COLUMN date TYPE TIMESTAMP USING to_timestamp(date/1000);
 
+// async () => {}
+
 pool.query(`CREATE TABLE IF NOT EXISTS reviews(
   reviews_id SERIAL PRIMARY KEY,
   product_id INT NOT NULL,
@@ -22,11 +24,11 @@ pool.query(`CREATE TABLE IF NOT EXISTS reviews(
   summary TEXT,
   body TEXT NOT NULL,
   recommend BOOLEAN NOT NULL,
-  reported BOOLEAN NOT NULL DEFAULT f,
+  reported BOOLEAN NOT NULL,
   reviewer_name VARCHAR(60) NOT NULL,
   reviewer_email VARCHAR(60) NOT NULL,
   response VARCHAR(1000),
-  helpfulness SMALLINT NOT NULL DEFAULT 0);`
+  helpfulness SMALLINT NOT NULL);`
 );
 
 pool.query(`CREATE TABLE IF NOT EXISTS characteristics(
@@ -59,33 +61,22 @@ pool.query(`CREATE TABLE IF NOT EXISTS characteristics_reviews(
   );`
 );
 
+  // CREATE INDEX FOR faster GET req.
+pool.query(`CREATE INDEX IF NOT EXISTS idx_product_id ON reviews (product_id)`);
+pool.query(`CREATE INDEX IF NOT EXISTS idx_photo_review_id ON reviews_photos (review_id)`);
+pool.query(`CREATE INDEX IF NOT EXISTS idx_char_review_id ON characteristics_reviews (review_id)`);
 
 
-// not needed yet... //
-// pool.query(`CREATE TABLE IF NOT EXISTS meta(
-//   id SERIAL PRIMARY KEY,
-//   product_id INT NOT NULL,
-//   ratings1 INT NOT NULL,
-//   ratings2 INT NOT NULL,
-//   ratings3 INT NOT NULL,
-//   ratings4 INT NOT NULL,
-//   ratings5 INT NOT NULL,
-//   recommended_no INT NOT NULL,
-//   recommended_yes INT NOT NULL);`
-// );
 
-
-  // Reviews
+  // Reviews // Characteristics // photos // char_reviews
 // pool.query(`COPY reviews (reviews_id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) FROM '/Users/hieungo/HackReactor/rps2209/SDC-Reviews-DB/server/db/data/reviews.csv' DELIMITER ',' CSV HEADER;`).then(() => console.log('copied into reviews'));
 
-  // Characteristics
 // pool.query(`COPY characteristics (characteristics_id, product_id, name) FROM '/Users/hieungo/HackReactor/rps2209/SDC-Reviews-DB/server/db/data/characteristics.csv' DELIMITER ',' CSV HEADER;`).then(() => console.log('copied into characteristics'))
 
-  // reviews_photos
 // pool.query(`COPY reviews_photos (reviews_photos_id, review_id, url) FROM '/Users/hieungo/HackReactor/rps2209/SDC-Reviews-DB/server/db/data/reviews_photos.csv' DELIMITER ',' CSV HEADER;`).then(() => console.log('copied into reviews_photos'));
 
-  // characteristics_reviews
 // pool.query(`COPY characteristics_reviews (characteristics_reviews_id, characteristic_id, review_id, value) FROM '/Users/hieungo/HackReactor/rps2209/SDC-Reviews-DB/server/db/data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;`).then(() => console.log('copied into characteristics_reviews'));
+
 
 /*  reviews, characteristics, reviews_photos, characteristics_reviews */
 // pool.query(`SELECT setval(pg_get_serial_sequence('reviews', 'reviews_id'), (select max(reviews_id) from reviews));`).then(() => console.log('Sequence updated for reviews'));
@@ -95,6 +86,5 @@ pool.query(`CREATE TABLE IF NOT EXISTS characteristics_reviews(
 // pool.query(`SELECT setval(pg_get_serial_sequence('reviews_photos', 'reviews_photos_id'), (select max(reviews_photos_id) from reviews_photos));`).then(() => console.log('Sequence updated for reviews_photos'));
 
 // pool.query(`SELECT setval(pg_get_serial_sequence('characteristics_reviews', 'characteristics_reviews_id'), (select max(characteristics_reviews_id) from characteristics_reviews));`).then(() => console.log('Sequence updated for characteristics_reviews'));
-
 
 module.exports = pool;

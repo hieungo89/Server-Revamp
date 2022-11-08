@@ -4,7 +4,7 @@ module.exports = {
   getReviews: (req, res) => {
     models.getAllReviews(req.params)
       .then(result => {
-        res.status(200).send(result.rows[0])
+        res.status(200).send(result.rows[0].data)
       })
       .catch(err => console.log('controller retrieval failed: ', err));
   },
@@ -23,13 +23,13 @@ module.exports = {
 
   helpfulReview: (req, res) => {
     models.markHelpful(req.params)
-      .then(() => res.status(202).end())
+      .then(result => res.status(202).end())
       .catch(err => console.log('Error marking review as helpful ', err))
   },
 
   reportReview: (req, res) => {
     models.markReport(req.params)
-      .then(() => res.status(202).end())
+      .then(result => res.status(202).end())
       .catch(err => console.log('Error reporting ', err))
   }
 };
