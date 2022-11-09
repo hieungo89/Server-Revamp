@@ -2,21 +2,20 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export const options = {
-  // virtual users
-  vus: 100,
-  duration: '10s',
+  vus: 400, // virtual users
+  duration: '60s',
 };
 
 
 export default function () {
-  // for (let id = 40341; id <= 40350; id++) {
-  // http.get(`http://localhost:3001/reviews/${id}`);
-  // http.put(`http://localhost:3001/reviews/5774954/helpful`)
-  // sleep(1);
-  // }
+  let last10Percent = 900000 + Math.floor(Math.random() * 100000)
+  const getReviews = http.get(`http://localhost:3001/reviews/${last10Percent}`);
+  const getMeta = http.get(`http://localhost:3001/reviews/meta/${last10Percent}`);
+  // const helpful = http.put(`http://localhost:3001/reviews/5774955/helpful`);
 
-  http.get(`http://localhost:3001/reviews/40350`);
-  sleep(1);
+  check(getReviews, {'Reviews has status 200': (r) => r.status === 200})
+  check(getMeta, {'Meta has status 200': (r) => r.status === 200})
+  // check(helpful, {'Helpful has status 202': (r) => r.status === 202})
 }
 
 

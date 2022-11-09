@@ -12,7 +12,10 @@ module.exports = {
       'results', (SELECT json_agg(row_to_json(reviews))
         FROM (
           SELECT reviews_id, rating, date, summary, body, recommend, reviewer_name, response, helpfulness,
-            (SELECT json_agg(url)
+            (SELECT COALESCE(
+              json_agg(json_build_object(
+                'id', reviews_photos_id,
+                'url', url)), '[]')
               FROM reviews_photos
               WHERE reviews_id=review_id) AS photos
           FROM reviews
@@ -22,6 +25,7 @@ module.exports = {
           FETCH NEXT ${count} ROW ONLY
         ) reviews
       )) AS data;`
+
     return db.query(queryStr)
       .then(result => { return result });
   },
@@ -89,7 +93,7 @@ module.exports = {
     const photoQueryStr = `INSERT INTO reviews_photos(review_id, url) VALUES($1, unnest($2::text[]));`
     db.query(photoQueryStr, [reviews_id, photos]);
 
-    let char_id = []
+    let char_id = [];
     let charReviewsContainer = [];
     for (let key in characteristics) {
       char_id.push(key);

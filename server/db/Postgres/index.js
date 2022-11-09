@@ -19,21 +19,21 @@ const pool = new Pool({
 pool.query(`CREATE TABLE IF NOT EXISTS reviews(
   reviews_id SERIAL PRIMARY KEY,
   product_id INT NOT NULL,
-  rating SMALLINT NOT NULL,
-  date BIGINT NOT NULL,
+  rating TEXT NOT NULL,
+  date TEXT NOT NULL,
   summary TEXT,
   body TEXT NOT NULL,
   recommend BOOLEAN NOT NULL,
   reported BOOLEAN NOT NULL,
   reviewer_name VARCHAR(60) NOT NULL,
   reviewer_email VARCHAR(60) NOT NULL,
-  response VARCHAR(1000),
-  helpfulness SMALLINT NOT NULL);`
+  response TEXT,
+  helpfulness INT NOT NULL);`
 );
 
 pool.query(`CREATE TABLE IF NOT EXISTS characteristics(
   characteristics_id SERIAL PRIMARY KEY,
-  product_id INT NOT NULL,
+  product_id TEXT NOT NULL,
   name VARCHAR(60) NOT NULL);`
 );
 
@@ -65,6 +65,8 @@ pool.query(`CREATE TABLE IF NOT EXISTS characteristics_reviews(
 pool.query(`CREATE INDEX IF NOT EXISTS idx_product_id ON reviews (product_id)`);
 pool.query(`CREATE INDEX IF NOT EXISTS idx_photo_review_id ON reviews_photos (review_id)`);
 pool.query(`CREATE INDEX IF NOT EXISTS idx_char_review_id ON characteristics_reviews (review_id)`);
+pool.query(`CREATE INDEX IF NOT EXISTS idx_char_id ON characteristics (characteristics_id)`);
+pool.query(`CREATE INDEX IF NOT EXISTS idx_review_char_id ON characteristics_reviews (characteristic_id)`);
 
 
 
