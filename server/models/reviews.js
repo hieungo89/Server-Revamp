@@ -72,7 +72,6 @@ module.exports = {
             WHERE characteristic_id=characteristics_id)
           )
           FROM characteristics_reviews
-          WHERE characteristic_id=characteristics_id
           LIMIT 1)
         )
         FROM characteristics
