@@ -1,14 +1,18 @@
 const db = require('../db/Postgres');
 
 module.exports = {
-  getAllReviews: ({ product_id }) => {
-    let page = 0;
-    let count = 5;
+  getAllReviews: ({ product_id }, { page, count, sort }) => {
+    if (sort === 'helpful') {sort = 'helpfulness DESC'};
+    if (sort === 'newest') {sort = 'date DESC'};
+    if (sort === 'relevant') {sort = 'helpfulness DESC, date DESC'};
+    let getPage = page || 0;
+    let getCount = count || 5;
+    let getSort = sort  || 'helpfulness DESC';
 
     const queryStr = `SELECT json_build_object(
       'product_id', ${product_id},
-      'page', ${page},
-      'count', ${count},
+      'page', ${getPage},
+      'count', ${getCount},
       'results', (SELECT json_agg(row_to_json(reviews))
         FROM (
           SELECT reviews_id, rating, date, summary, body, recommend, reviewer_name, response, helpfulness,
@@ -20,15 +24,36 @@ module.exports = {
               WHERE reviews_id=review_id) AS photos
           FROM reviews
           WHERE product_id=${product_id} AND reported='false'
-          ORDER BY helpfulness DESC, date DESC
-          OFFSET ${count * page} ROWS
-          FETCH NEXT ${count} ROW ONLY
+          ORDER BY ${getSort}
+          OFFSET ${getCount * getPage} ROWS
+          FETCH NEXT ${getCount} ROW ONLY
         ) reviews
       )) AS data;`
 
     return db.query(queryStr)
       .then(result => { return result });
   },
+
+  // explain analyze SELECT json_build_object(
+  //   'product_id', 40351,
+  //   'page', '0',
+  //   'count', '5',
+  //   'results', (SELECT json_agg(row_to_json(reviews))
+  //     FROM (
+  //       SELECT reviews_id, rating, date, summary, body, recommend, reviewer_name, response, helpfulness,
+  //         (SELECT COALESCE(
+  //           json_agg(json_build_object(
+  //             'id', reviews_photos_id,
+  //             'url', url)), '[]')
+  //           FROM reviews_photos
+  //           WHERE reviews_id=review_id) AS photos
+  //       FROM reviews
+  //       WHERE product_id=40351 AND reported='false'
+  //       ORDER BY helpfulness DESC, date DESC
+  //       OFFSET 0 ROWS
+  //       FETCH NEXT 5 ROW ONLY
+  //     ) reviews
+  //   )) AS data;
 
   getMetaInfo: ({ product_id }) => {
     const queryStr = `SELECT json_build_object(

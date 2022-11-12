@@ -2,7 +2,7 @@ const models = require('../models/reviews');
 
 module.exports = {
   getReviews: (req, res) => {
-    models.getAllReviews(req.params)
+    models.getAllReviews(req.params, req.query)
       .then(result => {
         res.status(200).send(result.rows[0].data)
       })
