@@ -62,11 +62,14 @@ pool.query(`CREATE TABLE IF NOT EXISTS characteristics_reviews(
 );
 
   // CREATE INDEX FOR faster GET req.
+
 pool.query(`CREATE INDEX IF NOT EXISTS idx_product_id ON reviews (product_id)`);
 pool.query(`CREATE INDEX IF NOT EXISTS idx_photo_review_id ON reviews_photos (review_id)`);
 pool.query(`CREATE INDEX IF NOT EXISTS idx_char_review_id ON characteristics_reviews (review_id)`);
-pool.query(`CREATE INDEX IF NOT EXISTS idx_char_id ON characteristics (characteristics_id)`);
 pool.query(`CREATE INDEX IF NOT EXISTS idx_review_char_id ON characteristics_reviews (characteristic_id)`);
+// pool.query(`CREATE INDEX IF NOT EXISTS idx_char_id ON characteristics (characteristics_id)`);
+// pool.query(`CREATE INDEX IF NOT EXISTS idx_char_value ON characteristics_reviews (value)`);
+
 
 
 
