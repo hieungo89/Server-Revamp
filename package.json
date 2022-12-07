@@ -1,7 +1,7 @@
 {
-  "name": "sdc-starter-template",
+  "name": "server-revamp",
   "version": "1.0.0",
-  "description": "Fork and clone this repo to start working on your widget!",
+  "description": "Replaced a Monolithic API with 100 RPS max to Microservices API to scale at least 100 RPS per feature.",
   "main": "index.js",
   "scripts": {
     "server-dev": "nodemon server/index.js -w",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/System-Design-Casper-Reactor/SDC-Starter-template.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Hieu Ngo",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/System-Design-Casper-Reactor/SDC-Starter-template/issues"
